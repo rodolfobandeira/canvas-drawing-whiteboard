@@ -1,9 +1,37 @@
+function renderPoints(context, points) {
+    context.lineWidth = 3;
+    context.strokeStyle = '#FF0000';
+    context.lineCap = "round";
+    context.imageSmoothingEnabled = true;
+
+    let xx = points[0][0][0] + 40;
+    let yy = points[0][0][1] + 40;
+
+    console.log(xx + ", " + yy);
+    context.moveTo(xx, yy);
+    context.beginPath();
+
+    points.forEach(point => {
+        xx = point[0][0];
+        yy = point[0][1];
+        context.lineTo(xx, yy);
+    });
+
+    context.stroke();
+}
+
+
 window.addEventListener("load", () => {
     const canvas = document.querySelector('#canvas');
     const context = canvas.getContext('2d');
 
     canvas.height = window.innerHeight - 10;
     canvas.width = window.innerWidth - 10;
+
+    // localStorage.setItem("points", []);
+    pp = JSON.parse(localStorage.getItem("points"))
+    console.log(pp);
+    renderPoints(context, pp);
 
     let painting = false;
     let points = [];
@@ -17,7 +45,7 @@ window.addEventListener("load", () => {
         painting = false;
         context.beginPath();
         // console.log(points);
-        renderPoints(points);
+        // renderPoints(points);
     }
 
     function getXY(e) {
@@ -38,26 +66,10 @@ window.addEventListener("load", () => {
         context.beginPath();
         context.moveTo(e.clientX, e.clientY);
 
-        points = [];
+        points.push([]);
         points[points.length - 1].push([pos.x, pos.y]);
-        // console.log(pos);
-    }
-
-    function renderPoints(points) {
-
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.strokeStyle = '#FF0000';
-        context.beginPath();
-
-        /// get a stroke
-        for(let i = 0; i < points.length; i++) {
-            console.log(points[i][0], points[i][1]);
-
-            context.lineTo(points[i][0], points[i][1]);
-            context.stroke();
-            context.beginPath();
-            context.moveTo(points[i][0], points[i][1]);
-        }
+    
+        localStorage.setItem("points", JSON.stringify(points));
     }
 
       canvas.addEventListener("mousedown", startPosition);
